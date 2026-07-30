@@ -1,0 +1,83 @@
+class Solution{
+    public :
+    BinaryTree<int>* markParent(BinaryTree<int>* root,unordered_map<BinaryTree<int>* , BinaryTree<int>*>&parent_track , int start)
+    {
+        queue<BinaryTree<int>*>q;
+        BinaryTree<int>* res = nullptr;
+        q.push(root);
+        while(!q.empty())
+        {
+            BinaryTree<int>* node = q.front();
+            q.pop();
+            if(node->val == start) 
+            {
+                res = node;
+            }
+            if(node->left)
+            {
+                q.push(node->left);
+                parent_track[node->left]=node;
+            }
+            if(node->right)
+            {
+                q.push(node->right);
+                parent_track[node->right]=node;
+            }
+        }
+        return res;
+
+    }
+
+    int findMinTime(unordered_map<BinaryTree<int>* , BinaryTree<int>*>&parent_track , BinaryTree<int>* target)
+    {
+        queue<BinaryTree<int>*>q;
+        unordered_map<BinaryTree<int>* , bool>visited;
+        q.push(target);
+        visited[target]=true;
+        int time =0;
+        while(!q.empty())
+        {
+            
+            int size = q.size();
+            bool spread = false;
+
+            for(int i=0;i<size;i++)
+            {
+                BinaryTree<int>* cur = q.front();
+                q.pop();
+                if(cur->left && !visited[cur->left])
+                {
+                    spread=true;
+                    q.push(cur->left);
+                    visited[cur->left]=true;
+                }
+                if(cur->right && !visited[cur->right])
+                {
+                    spread=true;
+                    q.push(cur->right);
+                    visited[cur->right]=true;
+                }
+                if(parent_track[cur] && !visited[parent_track[cur]])
+                {
+                    spread=true;
+                    q.push(parent_track[cur]);
+                    visited[parent_track[cur]]=true;
+                }
+            }
+            if(spread)
+            {
+                time++;
+            }
+
+        }
+        return time;
+    }
+    int timeToBurn(BinaryTree<int>* root , int start)
+    {
+        unordered_map<BinaryTree<int>* , BinaryTree<int>*>parent_track;
+        BinaryTree<int>* target = markParent(root,parent_track,start);
+        return findMinTime(parent_track,target);
+    }
+    
+};
+    
