@@ -1,5 +1,4 @@
-class Solution {
-public:
+
     void nextPermutation(vector<int>& nums) {
        int index = -1;
         int n  = nums.size();
